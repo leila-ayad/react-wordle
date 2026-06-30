@@ -3,6 +3,7 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "./assets/vite.svg";
 import heroImg from "./assets/hero.png";
 import "./App.css";
+import Row from "./Row.jsx";
 
 const initialState = {
   answer: "nakul",
@@ -15,13 +16,22 @@ function reducer(state, action) {
   switch (action.type) {
     case "ADD_LETTER":
       console.log("add");
-      return { ...state, currentGuess: (state.currentGuess += action.payload) };
+      return { ...state, currentGuess: state.currentGuess + action.payload };
     case "DELETE_LETTER":
       console.log("delete");
       return { ...state, currentGuess: state.currentGuess.slice(0, -1) };
     case "ENTER_WORD":
-      console.log("enter");
-      return;
+      if (state.currentGuess.length === 5) {
+        return {
+          ...state,
+          currentTry: state.currentTry + 1,
+          guesses: [...state.guesses, state.currentGuess],
+          currentGuess: "",
+        };
+      } else {
+        console.log("current guess must be 5 letters");
+        return state;
+      }
     default:
       throw new Error();
   }
@@ -51,7 +61,24 @@ function App() {
     };
   }, []);
 
-  return <></>;
+  useEffect(() => {
+    console.log("state", state);
+  }, [state]);
+
+  return (
+    <div className="wordle">
+      <h1>REACT WORDLE</h1>
+      {Array.from({ length: 6 }).map((_, i) => {
+        if (i < state.currentTry) {
+          return <Row key={i} word={state.guesses[i]}></Row>;
+        } else if (i === state.currentTry) {
+          return <Row key={i} word={state.currentGuess}></Row>;
+        } else if (i > state.currentTry) {
+          return <Row key={i}></Row>;
+        }
+      })}
+    </div>
+  );
 }
 
 export default App;
