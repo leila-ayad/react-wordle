@@ -4,3 +4,15 @@
   border: 2px solid black;
   background-color: white;
 }
+
+.correct {
+  background-color: green;
+}
+
+.present {
+  background-color: yellow;
+}
+
+.absent {
+  background-color: red;
+}

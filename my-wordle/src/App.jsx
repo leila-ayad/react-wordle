@@ -16,7 +16,11 @@ function reducer(state, action) {
   switch (action.type) {
     case "ADD_LETTER":
       console.log("add");
-      return { ...state, currentGuess: state.currentGuess + action.payload };
+      if (state.currentGuess.length < 5) {
+        return { ...state, currentGuess: state.currentGuess + action.payload };
+      } else {
+        return state;
+      }
     case "DELETE_LETTER":
       console.log("delete");
       return { ...state, currentGuess: state.currentGuess.slice(0, -1) };
@@ -35,6 +39,20 @@ function reducer(state, action) {
     default:
       throw new Error();
   }
+}
+
+function checkGuess(guess, answer) {
+  let results = [];
+  for (let i = 0; i < guess.length; i++) {
+    if (guess[i] === answer[i]) {
+      results.push("correct");
+    } else if (answer.includes(guess[i])) {
+      results.push("present");
+    } else {
+      results.push("absent");
+    }
+  }
+  return results;
 }
 
 function App() {
@@ -70,7 +88,15 @@ function App() {
       <h1>REACT WORDLE</h1>
       {Array.from({ length: 6 }).map((_, i) => {
         if (i < state.currentTry) {
-          return <Row key={i} word={state.guesses[i]}></Row>;
+          let letterStates = checkGuess(state.guesses[i], state.answer);
+          console.log(letterStates);
+          return (
+            <Row
+              key={i}
+              word={state.guesses[i]}
+              letterStates={letterStates}
+            ></Row>
+          );
         } else if (i === state.currentTry) {
           return <Row key={i} word={state.currentGuess}></Row>;
         } else if (i > state.currentTry) {

@@ -1,5 +1,5 @@
-import "./cell.css";
+import "./Cell.css";
 
-export default function Cell({ letter = "" }) {
-  return <div className="cell">{letter}</div>;
+export default function Cell({ letter = "", letterState = "" }) {
+  return <div className={`cell ${letterState}`}>{letter}</div>;
 }
